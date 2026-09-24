@@ -18,21 +18,21 @@ function App() {
 
     try {
       // Using a clean, free public endpoint
-      const response = await fetch('https://cleaburi.com', {
+      const response = await fetch('http://localhost:3000/api/v1', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({ url: longUrl }),
+        body: JSON.stringify({ url: longUrl }),
       });
 
       const data = await response.json();
 
-      if (data.result_url) {
-        setShortUrl(data.result_url);
-      } else {
-        throw new Error('Failed to shorten the URL. Please check your syntax.');
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to shorten the URL');
       }
+
+      setShortUrl(data.short)
     } catch (err) {
       setError(err.message || 'Something went wrong. Try again.');
     } finally {
